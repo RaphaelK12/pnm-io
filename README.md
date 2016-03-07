@@ -8,10 +8,10 @@ Reading an image is done as follows.
 ```cpp
 using namespace std;
 
-auto ifs = ifstream("my_file.ppm", ios::binary);
 auto width = size_t{0};
 auto height = size_t{0};
 auto pixel_data = vector<uint8_t>();
+auto ifs = ifstream("my_file.ppm", ios::binary);
 thinks::ppm::readRgbImage(ifs, &width, &height, &pixel_data);
 ifs.close();
 ```
@@ -49,3 +49,4 @@ thinks::ppm::readRgbImage("my_file.ppm", width, height, pixel_data);
 ```
 
 ##Tests
+This repository includes a simple project for running a small test suite. The test can be found in [this](https://github.com/thinks/ppm-io/blob/master/test/include/thinks/testPpm.hpp) header file. At present the test project builds and runs without errors.
