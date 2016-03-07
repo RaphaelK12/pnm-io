@@ -34,7 +34,7 @@ auto const width = size_t{10};
 auto const height = size_t{10};
 auto pixel_data = vector<uint8_t>(width * height * 3, 128);
 auto ofs = ofstream("my_file.ppm", ios::binary);
-thinks::ppm::readRgbImage(ofs, width, height, pixel_data);
+thinks::ppm::writeRgbImage(ofs, width, height, pixel_data);
 ofs.close();
 ```
 Again, there is a convenience version for writing to disk.
@@ -45,7 +45,7 @@ using namespace std;
 auto const width = size_t{10};
 auto const height = size_t{10};
 auto pixel_data = vector<uint8_t>(width * height * 3, 128);
-thinks::ppm::readRgbImage("my_file.ppm", width, height, pixel_data);
+thinks::ppm::writeRgbImage("my_file.ppm", width, height, pixel_data);
 ```
 
 ##Tests
