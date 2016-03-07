@@ -49,4 +49,4 @@ thinks::ppm::readRgbImage("my_file.ppm", width, height, pixel_data);
 ```
 
 ##Tests
-This repository includes a simple project for running a small test suite. The test can be found in [this](https://github.com/thinks/ppm-io/blob/master/test/include/thinks/testPpm.hpp) header file. At present the test project builds and runs without errors.
+This repository includes a simple [CMake project](https://github.com/thinks/ppm-io/blob/master/test/CMakeLists.txt) for running a small test suite. The test can be found in [this](https://github.com/thinks/ppm-io/blob/master/test/include/thinks/testPpm.hpp) header file. At present the test project builds and runs without errors.
