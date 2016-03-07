@@ -14,10 +14,31 @@ namespace ppm {
 namespace test {
 
 namespace detail {
+
+void writeInvalidRgbImage(
+  std::ostream& os,
+  std::string const& magic_number,
+  std::string const& max_value,
+  std::size_t const width,
+  std::size_t const height,
+  std::vector<std::uint8_t> const& pixel_data)
+{
+  using namespace std;
+
+  // Write header.
+  os << magic_number << "\n"
+     << width << " " << height << "\n"
+     << max_value
+     << "\n"; // Marks beginning of pixel data.
+
+  // Write pixel data.
+  os.write(reinterpret_cast<char const*>(pixel_data.data()), pixel_data.size());
+}
+
 } // namespace detail
 
 inline
-bool testWriteReadRoundTrip()
+bool writeReadRoundTrip()
 {
   using namespace std;
 
@@ -34,15 +55,17 @@ bool testWriteReadRoundTrip()
     }
   }
 
-  auto const filename = string("./test.ppm");
+  // Write image to IO stream.
+  auto ss = stringstream();
+  writeRgbImage(ss, write_width, write_height, write_pixels);
 
-  writeRgb(filename, write_width, write_height, write_pixels);
-
+  // Read image from IO stream.
   auto read_width = size_t{0};
   auto read_height = size_t{0};
   auto read_pixels = vector<uint8_t>();
-  readRgb(filename, &read_width, &read_height, &read_pixels);
+  readRgbImage(ss, &read_width, &read_height, &read_pixels);
 
+  // Check that values were preserved.
   auto passed = true;
   passed = passed && (read_width == write_width);
   passed = passed && (read_height == write_height);
@@ -52,17 +75,17 @@ bool testWriteReadRoundTrip()
 }
 
 inline
-bool testWriteInvalidFilename()
+bool writeInvalidFilename()
 {
   using namespace std;
 
   auto thrown = false;
-  auto const filename = string("/invalid/file/name.ppm");
+  auto const filename = string(); // Invalid.
   auto const width = size_t{10};
   auto const height = size_t{10};
   auto const pixel_data = vector<uint8_t>(width * height * 3);
   try {
-    writeRgb(filename, width, height, pixel_data);
+    writeRgbImage(filename, width, height, pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;
@@ -71,17 +94,17 @@ bool testWriteInvalidFilename()
 }
 
 inline
-bool testWriteInvalidWidth()
+bool writeInvalidWidth()
 {
   using namespace std;
 
-  auto thrown = false;
-  auto const filename = string("./filename.ppm");
-  auto const width = size_t{0};
+  auto ss = stringstream();
+  auto const width = size_t{0}; // Invalid.
   auto const height = size_t{10};
   auto const pixel_data = vector<uint8_t>(width * height * 3);
+  auto thrown = false;
   try {
-    writeRgb(filename, width, height, pixel_data);
+    writeRgbImage(ss, width, height, pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;
@@ -90,17 +113,17 @@ bool testWriteInvalidWidth()
 }
 
 inline
-bool testWriteInvalidHeight()
+bool writeInvalidHeight()
 {
   using namespace std;
 
-  auto thrown = false;
-  auto const filename = string("./filename.ppm");
+  auto ss = stringstream();
   auto const width = size_t{10};
-  auto const height = size_t{0};
+  auto const height = size_t{0}; // Invalid.
   auto const pixel_data = vector<uint8_t>(width * height * 3);
+  auto thrown = false;
   try {
-    writeRgb(filename, width, height, pixel_data);
+    writeRgbImage(ss, width, height, pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;
@@ -109,17 +132,17 @@ bool testWriteInvalidHeight()
 }
 
 inline
-bool testWriteInvalidPixelData()
+bool writeInvalidPixelData()
 {
   using namespace std;
 
-  auto thrown = false;
-  auto const filename = string("./filename.ppm");
+  auto ss = stringstream();
   auto const width = size_t{10};
   auto const height = size_t{10};
-  auto const pixel_data = vector<uint8_t>(width * height * 3 - 1);
+  auto const pixel_data = vector<uint8_t>(width * height * 3 - 1); // Invalid.
+  auto thrown = false;
   try {
-    writeRgb(filename, width, height, pixel_data);
+    writeRgbImage(ss, width, height, pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;
@@ -128,17 +151,17 @@ bool testWriteInvalidPixelData()
 }
 
 inline
-bool testReadInvalidFilename()
+bool readInvalidFilename()
 {
   using namespace std;
 
-  auto thrown = false;
-  auto const filename = string("/invalid/file/name.ppm");
+  auto const filename = string(""); // Invalid.
   auto width = size_t{0};
   auto height = size_t{0};
   auto pixel_data = vector<uint8_t>();
+  auto thrown = false;
   try {
-    readRgb(filename, &width, &height, &pixel_data);
+    readRgbImage(filename, &width, &height, &pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;
@@ -147,34 +170,25 @@ bool testReadInvalidFilename()
 }
 
 inline
-bool testReadInvalidMagicNumber()
+bool readInvalidMagicNumber()
 {
   using namespace std;
 
-  auto const filename = string("./invalid_magic_number.ppm");
-  auto ofs = ofstream(filename, ios::binary);
-
-  // Write header.
-  auto const magic_number = string("P5");
-  auto const max_value = string("255");
-  ofs << magic_number << "\n"
-      << 10 << " " << 10 << "\n"
-      << max_value
-      << "\n"; // Marks beginning of pixel data.
-
-  // Write pixel data.
-  auto const write_pixel_data = vector<uint8_t>(10 * 10 * 3);
-  ofs.write(reinterpret_cast<char const*>(write_pixel_data.data()),
-            write_pixel_data.size());
-
-  ofs.close();
+  auto ss = stringstream();
+  detail::writeInvalidRgbImage(
+    ss,
+    "P5", // Invalid.
+    "255",
+    10,
+    10,
+    vector<uint8_t>(10 * 10 * 3));
 
   auto thrown = false;
   try {
     auto width = size_t{0};
     auto height = size_t{0};
     auto read_pixel_data = vector<uint8_t>();
-    readRgb(filename, &width, &height, &read_pixel_data);
+    readRgbImage(ss, &width, &height, &read_pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;
@@ -184,34 +198,25 @@ bool testReadInvalidMagicNumber()
 }
 
 inline
-bool testReadInvalidMaxValue()
+bool readInvalidMaxValue()
 {
   using namespace std;
 
-  auto const filename = string("./invalid_max_value.ppm");
-  auto ofs = ofstream(filename, ios::binary);
-
-  // Write header.
-  auto const magic_number = string("P6");
-  auto const max_value = string("254");
-  ofs << magic_number << "\n"
-      << 10 << " " << 10 << "\n"
-      << max_value
-      << "\n"; // Marks beginning of pixel data.
-
-  // Write pixel data.
-  auto const write_pixel_data = vector<uint8_t>(10 * 10 * 3);
-  ofs.write(reinterpret_cast<char const*>(write_pixel_data.data()),
-            write_pixel_data.size());
-
-  ofs.close();
+  auto ss = stringstream();
+  detail::writeInvalidRgbImage(
+    ss,
+    "P6",
+    "254", // Invalid.
+    10,
+    10,
+    vector<uint8_t>(10 * 10 * 3));
 
   auto thrown = false;
   try {
     auto width = size_t{0};
     auto height = size_t{0};
     auto read_pixel_data = vector<uint8_t>();
-    readRgb(filename, &width, &height, &read_pixel_data);
+    readRgbImage(ss, &width, &height, &read_pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;
@@ -221,34 +226,25 @@ bool testReadInvalidMaxValue()
 }
 
 inline
-bool testReadInvalidFileSize()
+bool readInvalidFileSize()
 {
   using namespace std;
 
-  auto const filename = string("./invalid_magic_number.ppm");
-  auto ofs = ofstream(filename, ios::binary);
-
-  // Write header.
-  auto const magic_number = string("P6");
-  auto const max_value = string("255");
-  ofs << magic_number << "\n"
-      << 10 << " " << 10 << "\n"
-      << max_value
-      << "\n"; // Marks beginning of pixel data.
-
-  // Write pixel data.
-  auto const write_pixel_data = vector<uint8_t>(10 * 10 * 3 - 1);
-  ofs.write(reinterpret_cast<char const*>(write_pixel_data.data()),
-            write_pixel_data.size());
-
-  ofs.close();
+  auto ss = stringstream();
+  detail::writeInvalidRgbImage(
+    ss,
+    "P6",
+    "256",
+    10,
+    10,
+    vector<uint8_t>(10 * 10 * 3 - 1)); // Invalid.
 
   auto thrown = false;
   try {
     auto width = size_t{0};
     auto height = size_t{0};
     auto read_pixel_data = vector<uint8_t>();
-    readRgb(filename, &width, &height, &read_pixel_data);
+    readRgbImage(ss, &width, &height, &read_pixel_data);
   }
   catch (runtime_error&) {
     thrown = true;

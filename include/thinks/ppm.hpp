@@ -33,44 +33,46 @@ F openFileStream(
 
 } // namespace detail
 
-//! Read a PPM image from disk.
+//! Read a PPM image from an input stream.
 //!
 //! Assumptions:
-//! - the PPM file header does not contain any comments.
-//! - the PPM file header width and height are non-zero.
+//! - the PPM header does not contain any comments.
+//! - the PPM header width and height are non-zero.
 //! - the input pointers are non-null.
 //!
 //! Pixel data is read as RGB triplets in row major order. For instance,
-//! the first two pixels of the first row are read as:
+//! the pixel data for a 2x2 image is represented as follows:
 //!
-//! Row 0: (R: data[0], G: data[1], B: data[2]), (R: data[3], G: data[4], B: data[5])
+//!         Column 0                         | Column 1
+//!       +----------------------------------+------------------------------------+
+//! Row 0 | RGB: {data[0], data[1], data[2]} | RGB: {data[3], data[4], data[5]}   |
+//!       +----------------------------------+------------------------------------+
+//! Row 1 | RGB: {data[6], data[7], data[8]} | RGB: {data[9], data[10], data[11]} |
+//!       +----------------------------------+------------------------------------+
 //!
 //! An std::runtime_error is thrown if:
-//! - file cannot be opened.
 //! - the magic number is not 'P6'.
 //! - the max value is not '255'.
+//! - the pixel data cannot be read.
 inline
-void readRgb(
-  std::string const& filename,
+void readRgbImage(
+  std::istream& is,
   std::size_t* width,
   std::size_t* height,
   std::vector<std::uint8_t>* pixel_data)
 {
   using namespace std;
-  using namespace detail;
 
   assert(width != nullptr);
   assert(height != nullptr);
   assert(pixel_data != nullptr);
-
-  auto ifs = openFileStream<ifstream>(filename);
 
   // Read header.
   auto const expected_magic_number = string("P6");
   auto const expected_max_value = string("255");
   auto magic_number = string();
   auto max_value = string();
-  ifs >> magic_number >> *width >> *height >> max_value;
+  is >> magic_number >> *width >> *height >> max_value;
 
   assert(*width != 0);
   assert(*height != 0);
@@ -88,42 +90,59 @@ void readRgb(
   }
 
   // Skip ahead (an arbitrary number!) to the pixel data.
-  ifs.ignore(256, '\n');
+  is.ignore(256, '\n');
 
   // Read pixel data.
   pixel_data->resize((*width) * (*height) * 3);
-  ifs.read(reinterpret_cast<char*>(pixel_data->data()), pixel_data->size());
+  is.read(reinterpret_cast<char*>(pixel_data->data()), pixel_data->size());
 
-  if (!ifs) {
+  if (!is) {
     auto ss = stringstream();
     ss << "failed reading " << pixel_data->size() << " bytes";
-    ifs.close();
     throw runtime_error(ss.str());
   }
+}
 
+
+//! See std::istream overload version above.
+//!
+//! Throws an std::runtime_error if file cannot be opened.
+inline
+void readRgbImage(
+  std::string const& filename,
+  std::size_t* width,
+  std::size_t* height,
+  std::vector<std::uint8_t>* pixel_data)
+{
+  auto ifs = detail::openFileStream<std::ifstream>(filename);
+  readRgbImage(ifs, width, height, pixel_data);
   ifs.close();
 }
 
 
-//! Write a PPM image to disk.
-//! Pixel data is given as RGB triplets in row major order. For instance,
-//! the first two pixels of the first row are given as:
+//! Write a PPM image to an output stream.
 //!
-//! Row 0: (R: data[0], G: data[1], B: data[2]), (R: data[3], G: data[4], B: data[5])
+//! Pixel data is given as RGB triplets in row major order. For instance,
+//! the pixel data for a 2x2 image is represented as follows:
+//!
+//!         Column 0                         | Column 1
+//!       +----------------------------------+------------------------------------+
+//! Row 0 | RGB: {data[0], data[1], data[2]} | RGB: {data[3], data[4], data[5]}   |
+//!       +----------------------------------+------------------------------------+
+//! Row 1 | RGB: {data[6], data[7], data[8]} | RGB: {data[9], data[10], data[11]} |
+//!       +----------------------------------+------------------------------------+
 //!
 //! An std::runtime_error is thrown if:
-//! - file cannot be opened.
 //! - width or height is zero.
 //! - the size of the pixel data does not match the width and height.
 inline
-void writeRgb(
-  std::string const& filename,
+void writeRgbImage(
+  std::ostream& os,
   std::size_t const width,
   std::size_t const height,
   std::vector<std::uint8_t> const& pixel_data)
 {
   using namespace std;
-  using namespace detail;
 
   if (width == 0) {
     throw runtime_error("width must be non-zero");
@@ -137,19 +156,31 @@ void writeRgb(
     throw runtime_error("pixel data must match width and height");
   }
 
-  auto ofs = openFileStream<ofstream>(filename);
-
   // Write header.
   auto const magic_number = string("P6");
   auto const max_value = string("255");
-  ofs << magic_number << "\n"
-      << width << " " << height << "\n"
-      << max_value
-      << "\n"; // Marks beginning of pixel data.
+  os << magic_number << "\n"
+     << width << " " << height << "\n"
+     << max_value
+     << "\n"; // Marks beginning of pixel data.
 
   // Write pixel data.
-  ofs.write(reinterpret_cast<char const*>(pixel_data.data()), pixel_data.size());
+  os.write(reinterpret_cast<char const*>(pixel_data.data()), pixel_data.size());
+}
 
+
+//! See std::ostream overload version above.
+//!
+//! Throws an std::runtime_error if file cannot be opened.
+inline
+void writeRgbImage(
+  std::string const& filename,
+  std::size_t const width,
+  std::size_t const height,
+  std::vector<std::uint8_t> const& pixel_data)
+{
+  auto ofs = detail::openFileStream<std::ofstream>(filename);
+  writeRgbImage(ofs, width, height, pixel_data);
   ofs.close();
 }
 

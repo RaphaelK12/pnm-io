@@ -7,27 +7,28 @@
 int main(int /*argc*/, char* /*argv*/[])
 {
   using namespace std;
-  using namespace thinks::ppm::test;
+  using namespace thinks::ppm;
 
   auto success = true;
   try {
     // Write.
-    success = success && testWriteInvalidFilename();
-    success = success && testWriteInvalidWidth();
-    success = success && testWriteInvalidHeight();
-    success = success && testWriteInvalidPixelData();
+    success = success && test::writeInvalidFilename();
+    success = success && test::writeInvalidWidth();
+    success = success && test::writeInvalidHeight();
+    success = success && test::writeInvalidPixelData();
 
     // Read.
-    success = success && testReadInvalidFilename();
-    success = success && testReadInvalidMagicNumber();
-    success = success && testReadInvalidMaxValue();
-    success = success && testReadInvalidFileSize();
+    success = success && test::readInvalidFilename();
+    success = success && test::readInvalidMagicNumber();
+    success = success && test::readInvalidMaxValue();
+    success = success && test::readInvalidFileSize();
 
     // Round trip.
-    success = success && testWriteReadRoundTrip();
+    success = success && test::writeReadRoundTrip();
   }
-  catch (std::exception& ex) {
+  catch (exception& ex) {
     cerr << "Uncaught exception: " << ex.what() << endl;
+    success = false;
   }
 
   return success ? EXIT_SUCCESS : EXIT_FAILURE;
