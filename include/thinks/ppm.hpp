@@ -43,7 +43,7 @@ F openFileStream(
 //! Pixel data is read as RGB triplets in row major order. For instance,
 //! the pixel data for a 2x2 image is represented as follows:
 //!
-//!         Column 0                         | Column 1
+//!       | Column 0                         | Column 1
 //!       +----------------------------------+------------------------------------+
 //! Row 0 | RGB: {data[0], data[1], data[2]} | RGB: {data[3], data[4], data[5]}   |
 //!       +----------------------------------+------------------------------------+
@@ -125,7 +125,7 @@ void readRgbImage(
 //! Pixel data is given as RGB triplets in row major order. For instance,
 //! the pixel data for a 2x2 image is represented as follows:
 //!
-//!         Column 0                         | Column 1
+//!       | Column 0                         | Column 1
 //!       +----------------------------------+------------------------------------+
 //! Row 0 | RGB: {data[0], data[1], data[2]} | RGB: {data[3], data[4], data[5]}   |
 //!       +----------------------------------+------------------------------------+
