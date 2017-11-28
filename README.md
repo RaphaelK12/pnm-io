@@ -1,7 +1,7 @@
 # PPM IO
 This repository implements reading and writing of images in the [PPM format](http://netpbm.sourceforge.net/doc/ppm.html). The PPM image format is extremely simple, making it ideal for small exploratory projects. The major benefit of this simplicity is that is it possible to implement the PPM file format without using external dependencies, such as compression libraries. All production code in this repository is implemented in a single [header file](https://github.com/thinks/ppm-io/blob/master/include/thinks/ppm.hpp), making it very simple to add to any existing project without having to set up additional linker rules. Also, the implementation uses only standard types and holds no state, meaning it should be fairly straight-forward to use the read and write functions. Detailed documentation is available in the source code.
 
-##Usage
+## Usage
 The implementation supports both reading and writing of PPM images. We provide some brief usage examples here, also refer to the [tests](https://github.com/thinks/ppm-io/blob/master/test/include/thinks/testPpm.hpp) for further examples.
 
 Reading an image is done as follows.
@@ -48,5 +48,5 @@ auto pixel_data = vector<uint8_t>(width * height * 3, 128);
 thinks::ppm::writeRgbImage("my_file.ppm", width, height, pixel_data);
 ```
 
-##Tests
+## Tests
 This repository includes a simple [CMake project](https://github.com/thinks/ppm-io/blob/master/test/CMakeLists.txt) for running a small test suite. The test can be found in [this](https://github.com/thinks/ppm-io/blob/master/test/include/thinks/testPpm.hpp) header file. At present the test project builds and runs without errors.
