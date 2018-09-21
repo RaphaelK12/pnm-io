@@ -25,6 +25,8 @@ void OpenFileStream(
   std::string const& filename,
   std::ios_base::openmode const mode = std::ios::binary) 
 {
+  assert(file_stream != nullptr && "file_stream is null");
+
   file_stream->open(filename, mode);
   if (!(*file_stream)) {
     constexpr auto kErrMsgLen = std::size_t{ 1024 };
@@ -85,13 +87,18 @@ void ReadRgbImage(
   auto max_value = std::string{};
   is >> magic_number >> *width >> *height >> max_value;
 
-  assert(*width != 0);
-  assert(*height != 0);
-
   if (magic_number != expected_magic_number) {
     auto oss = std::ostringstream{};
     oss << "magic number must be '" << expected_magic_number << "'";
     throw std::runtime_error(oss.str());
+  }
+
+  if (*width == 0) {
+    throw std::runtime_error("width must be non-zero");
+  }
+
+  if (*height == 0) {
+    throw std::runtime_error("height must be non-zero");
   }
 
   if (max_value != expected_max_value) {
@@ -177,8 +184,9 @@ void WriteRgbImage(
   auto const magic_number = std::string{ "P6" };
   auto const max_value = std::string{ "255" };
   os << magic_number << "\n"
-     << width << " " << height << "\n"
-     << max_value << "\n";  // Marks beginning of pixel data.
+    << width << " " << height << "\n"
+    << max_value 
+    << "\n";  // Marks beginning of pixel data.
 
   // Write pixel data.
   os.write(reinterpret_cast<char const*>(pixel_data.data()), pixel_data.size());

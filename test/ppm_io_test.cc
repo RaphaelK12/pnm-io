@@ -98,6 +98,8 @@ TEST_CASE("Read invalid filename throws")
   auto height = std::size_t{ 0 };
   auto pixel_data = std::vector<std::uint8_t>{};
   auto const filename = std::string{}; // Invalid.
+
+  // Not checking error message since it is OS dependent.
   REQUIRE_THROWS_AS(
     ppm_io::ReadRgbImage(filename, &width, &height, &pixel_data),
     std::runtime_error);
@@ -122,6 +124,48 @@ TEST_CASE("Read invalid magic number throws")
     ppm_io::ReadRgbImage(ss, &width, &height, &pixel_data),
     std::runtime_error,
     utils::ExceptionContentMatcher("magic number must be 'P6'"));
+}
+
+
+TEST_CASE("Read invalid width throws")
+{
+  auto ss = std::stringstream{};
+  WriteInvalidRgbImage(
+    ss,
+    "P6",
+    "255",
+    0, // Invalid.
+    10,
+    std::vector<std::uint8_t>{});
+
+  auto width = std::size_t{ 0 };
+  auto height = std::size_t{ 0 };
+  auto pixel_data = std::vector<std::uint8_t>{};
+  REQUIRE_THROWS_MATCHES(
+    ppm_io::ReadRgbImage(ss, &width, &height, &pixel_data),
+    std::runtime_error,
+    utils::ExceptionContentMatcher("width must be non-zero"));
+}
+
+
+TEST_CASE("Read invalid height throws")
+{
+  auto ss = std::stringstream{};
+  WriteInvalidRgbImage(
+    ss,
+    "P6", 
+    "255",
+    10,
+    0, // Invalid.
+    std::vector<std::uint8_t>{});
+
+  auto width = std::size_t{ 0 };
+  auto height = std::size_t{ 0 };
+  auto pixel_data = std::vector<std::uint8_t>{};
+  REQUIRE_THROWS_MATCHES(
+    ppm_io::ReadRgbImage(ss, &width, &height, &pixel_data),
+    std::runtime_error,
+    utils::ExceptionContentMatcher("height must be non-zero"));
 }
 
 
