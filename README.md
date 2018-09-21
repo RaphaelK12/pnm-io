@@ -43,4 +43,4 @@ thinks::ppm_io::WriteRgbImage("my_file.ppm", width, height, pixel_data);
 ```
 
 ## Tests
-This repository includes a simple [CMake project](https://github.com/thinks/ppm-io/blob/master/test/CMakeLists.txt) for running a small test suite. The test can be found in [this](https://github.com/thinks/ppm-io/blob/master/test/include/thinks/testPpm.hpp) header file. At present the test project builds and runs without errors.
+Tests are implemented in the [Catch2](https://github.com/catchorg/Catch2) framework.

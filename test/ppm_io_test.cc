@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <thinks/ppm_io/ppm_io.h>
 #include <utils/catch_utils.h>
