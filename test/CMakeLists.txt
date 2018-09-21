@@ -1,18 +1,16 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11)
-PROJECT(ppm-test)
+# Copyright (C) 2018 Tommy Hinks <tommy.hinks@gmail.com>
+# This file is subject to the license terms in the LICENSE file
+# found in the top-level directory of this distribution.
 
-# Default to release build
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Release)
-ENDIF()
-MESSAGE(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+set(tests
+    ppm_io_test.cc
+)
 
-# Project Compiler Flags
-# ADD_DEFINITIONS(-Wall)
+add_executable(thinks_ppm_io_test
+    main.cc
+    ${tests})
+target_include_directories(thinks_ppm_io_test SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(thinks_ppm_io_test PUBLIC thinks_ppm_io)
+set_target_properties(thinks_ppm_io_test PROPERTIES CXX_STANDARD 11)
 
-INCLUDE_DIRECTORIES(
-  ../include
-  include)
-
-ADD_EXECUTABLE(ppm-test
-  main.cpp)
+add_test(NAME test COMMAND thinks_ppm_io_test)
