@@ -11,12 +11,9 @@ set(header_files
 add_library(thinks_ppm_io INTERFACE)
 target_sources(thinks_ppm_io INTERFACE ${header_files})
 target_include_directories(thinks_ppm_io INTERFACE include)
-#if(MSVC)
-#    target_compile_definitions(thinks_obj_io INTERFACE "-D_SCL_SECURE_NO_WARNINGS")
-#endif()
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     enable_testing()
     add_subdirectory(test)
-	#add_subdirectory(examples)
+	add_subdirectory(examples)
 endif()
