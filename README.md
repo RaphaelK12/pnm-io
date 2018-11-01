@@ -9,16 +9,16 @@ The implementation supports both reading and writing of PPM images. We provide s
 Reading images is done as follows.
 ```cpp
 // RGB (PPM)
-auto width = std::size_t{ 0 };
-auto height = std::size_t{ 0 };
+auto width = std::size_t{0};
+auto height = std::size_t{0};
 auto pixel_data = std::vector<std::uint8_t>{};
 auto ifs = std::ifstream("my_file.ppm", ios::binary);
 thinks::pnm_io::ReadPpmImage(ifs, &width, &height, &pixel_data);
 ifs.close();
 
 // Greyscale (PGM)
-auto width = std::size_t{ 0 };
-auto height = std::size_t{ 0 };
+auto width = std::size_t{0};
+auto height = std::size_t{0};
 auto pixel_data = std::vector<std::uint8_t>{};
 auto ifs = std::ifstream("my_file.pgm", ios::binary);
 thinks::pnm_io::ReadPgmImage(ifs, &width, &height, &pixel_data);
@@ -27,14 +27,14 @@ ifs.close();
 The above versions use the stream interface. This interface is the most flexible, since it does not assume that the image is stored on disk. Also, this version is useful for testing since it allows the tests to run in memory avoiding file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions are also available.
 ```cpp
 // RGB (PPM)
-auto width = std::size_t{ 0 };
-auto height = std::size_t{ 0 };
+auto width = std::size_t{0};
+auto height = std::size_t{0};
 auto pixel_data = std::vector<std::uint8_t>{};
 thinks::pnm_io::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
 
 // Greyscale (PGM)
-auto width = std::size_t{ 0 };
-auto height = std::size_t{ 0 };
+auto width = std::size_t{0};
+auto height = std::size_t{0};
 auto pixel_data = std::vector<std::uint8_t>{};
 thinks::pnm_io::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
 ```
@@ -42,16 +42,16 @@ thinks::pnm_io::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
 Writing image files is done in a similar fashion.
 ```cpp
 // Write a 10x10 RGB image where all pixels have the value (128, 128, 128).
-auto const width = std::size_t{ 10 };
-auto const height = std::size_t{ 10 };
+auto const width = std::size_t{10};
+auto const height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height * 3, 128);
 auto ofs = std::ofstream("my_file.ppm", ios::binary);
 thinks::pnm_io::WritePpmImage(ofs, width, height, pixel_data.data());
 ofs.close();
 
 // Write a 10x10 greyscale image where all pixels have the value 128.
-auto const width = std::size_t{ 10 };
-auto const height = std::size_t{ 10 };
+auto const width = std::size_t{10};
+auto const height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height, 128);
 auto ofs = std::ofstream("my_file.pgm", ios::binary);
 thinks::pnm_io::WritePgmImage(ofs, width, height, pixel_data.data());
@@ -60,15 +60,15 @@ ofs.close();
 Again, there are convenience versions for writing to disk.
 ```cpp
 // Write a 10x10 RGB image where all pixels have the value (128, 128, 128).
-auto const width = std::size_t{ 10 };
-auto const height = std::size_t{ 10 };
+auto const width = std::size_t{10};
+auto const height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height * 3, 128);
 thinks::pnm_io::WritePpmImage("my_file.ppm", width, height, pixel_data);
 
 
 // Write a 10x10 greyscale image where all pixels have the value 128.
-auto const width = std::size_t{ 10 };
-auto const height = std::size_t{ 10 };
+auto const width = std::size_t{10};
+auto const height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height, 128);
 thinks::pnm_io::WritePgmImage("my_file.pgm", width, height, pixel_data.data());
 ```
