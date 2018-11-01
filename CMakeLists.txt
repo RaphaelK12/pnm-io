@@ -3,14 +3,14 @@
 # found in the top-level directory of this distribution.
 
 cmake_minimum_required(VERSION 3.1)
-project(ppm-io)
+project(pnm-io)
 
 set(header_files
-	${CMAKE_CURRENT_SOURCE_DIR}/include/thinks/ppm_io/ppm_io.h
+	${CMAKE_CURRENT_SOURCE_DIR}/include/thinks/pnm_io/pnm_io.h
 )
-add_library(thinks_ppm_io INTERFACE)
-target_sources(thinks_ppm_io INTERFACE ${header_files})
-target_include_directories(thinks_ppm_io INTERFACE include)
+add_library(thinks_pnm_io INTERFACE)
+target_sources(thinks_pnm_io INTERFACE ${header_files})
+target_include_directories(thinks_pnm_io INTERFACE include)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     enable_testing()

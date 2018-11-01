@@ -3,12 +3,14 @@
 # found in the top-level directory of this distribution.
 
 set(examples
-	rgb_example.cc
+	pgm_example.cc
+	ppm_example.cc
+	simple_example.cc
 )
 
-add_executable(thinks_ppm_io_examples
+add_executable(thinks_pnm_io_examples
 	main.cc
 	${examples})
-target_include_directories(thinks_ppm_io_examples SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(thinks_ppm_io_examples PUBLIC thinks_ppm_io)
-set_target_properties(thinks_ppm_io_examples PROPERTIES CXX_STANDARD 11)
+target_include_directories(thinks_pnm_io_examples SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(thinks_pnm_io_examples PUBLIC thinks_pnm_io)
+set_target_properties(thinks_pnm_io_examples PROPERTIES CXX_STANDARD 11)
