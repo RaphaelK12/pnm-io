@@ -1,4 +1,4 @@
-# PPM IO
+# PNM IO
 This repository implements reading and writing of images in the [PNM formats](https://en.wikipedia.org/wiki/Netpbm_format). More specifically, reading and writing of RGB (PPM) and greyscale (PGM) images is supported. The PPM and PGM image formats are extremely simple, making them ideal for small exploratory projects. The major benefit of this simplicity is that is it possible to implement the these file format without using external dependencies, such as compression libraries. All production code in this repository is implemented in a single [header file](https://github.com/thinks/ppm-io/blob/master/include/thinks/pnm_io/pnm_io.h), making it very simple to add to any existing project without having to set up additional linker rules. Also, the implementation uses only standard types and holds no state, meaning it should be fairly straight-forward to use the read and write functions. Detailed documentation is available in the source code.
 
 All code in this repository is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
