@@ -4,9 +4,9 @@ This repository implements reading and writing of images in the [PNM format](htt
 All code in this repository is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
 
 ## Usage
-The implementation supports both reading and writing of PPM and PGM images. We provide some brief usage examples here, additional examples can be found in the [examples](https://github.com/thinks/ppm-io/blob/master/examples/) and [test](https://github.com/thinks/ppm-io/blob/master/test/) folders.
+The implementation supports both reading and writing of RGB (PPM) and greyscale (PGM)images. We provide some brief usage examples here, additional examples can be found in the [examples](https://github.com/thinks/ppm-io/blob/master/examples/) and [test](https://github.com/thinks/ppm-io/blob/master/test/) folders.
 
-The examples below demonstrate reading images. The functions taking an `std::istream` are the most flexible, since they do not assume that the image is stored on disk. Also, these versions are useful for testing since they allow the tests to run in memory which avoids file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions are also available.
+The examples below demonstrate reading images. The functions taking an `std::istream` are the most flexible, since they do not assume that the image is stored on disk. These versions are useful for testing since they allow the tests to run in memory which avoids file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions that take a file name are also provided.
 ```cpp
 #include <thinks/pnm_io/pnm_io.h>
 
@@ -33,37 +33,30 @@ ifs.close();
 // ... or more conveniently.
 thinks::pnm_io::ReadPgmImage("my_file.pgm", &width, &height, &pixel_data);
 ```
-Writing image files is done in a similar fashion.
+Writing image files is done in a similar fashion. Again, convenience functions taking file names are provided. 
 ```cpp
-// Write a 10x10 RGB image where all pixels have the value (128, 128, 128).
-auto const width = std::size_t{10};
-auto const height = std::size_t{10};
+#include <thinks/pnm_io/pnm_io.h>
+
+// Write a 10x10 RGB (PPM) image where all pixels have the value (128, 128, 128).
+constexpr auto width = std::size_t{10};
+constexpr auto height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height * 3, 128);
 auto ofs = std::ofstream("my_file.ppm", ios::binary);
 thinks::pnm_io::WritePpmImage(ofs, width, height, pixel_data.data());
 ofs.close();
 
-// Write a 10x10 greyscale image where all pixels have the value 128.
-auto const width = std::size_t{10};
-auto const height = std::size_t{10};
+// ... or more conveniently.
+thinks::pnm_io::WritePpmImage("my_file.ppm", width, height, pixel_data.data());
+
+// Write a 10x10 greyscale (PGM) image where all pixels have the value 128.
+constexpr auto width = std::size_t{10};
+constexpr auto height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height, 128);
 auto ofs = std::ofstream("my_file.pgm", ios::binary);
 thinks::pnm_io::WritePgmImage(ofs, width, height, pixel_data.data());
 ofs.close();
-```
-Again, there are convenience versions for writing to disk.
-```cpp
-// Write a 10x10 RGB image where all pixels have the value (128, 128, 128).
-auto const width = std::size_t{10};
-auto const height = std::size_t{10};
-auto pixel_data = std::vector<std::uint8_t>(width * height * 3, 128);
-thinks::pnm_io::WritePpmImage("my_file.ppm", width, height, pixel_data);
 
-
-// Write a 10x10 greyscale image where all pixels have the value 128.
-auto const width = std::size_t{10};
-auto const height = std::size_t{10};
-auto pixel_data = std::vector<std::uint8_t>(width * height, 128);
+// ... or more conveniently.
 thinks::pnm_io::WritePgmImage("my_file.pgm", width, height, pixel_data.data());
 ```
 
