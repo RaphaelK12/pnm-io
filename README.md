@@ -4,10 +4,12 @@ This repository implements reading and writing of images in the [PNM format](htt
 All code in this repository is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
 
 ## Usage
-The implementation supports both reading and writing of PPM images. We provide some brief usage examples here, additional examples can be found in to the [examples folder](https://github.com/thinks/ppm-io/blob/master/examples/).
+The implementation supports both reading and writing of PPM and PGM images. We provide some brief usage examples here, additional examples can be found in the [examples](https://github.com/thinks/ppm-io/blob/master/examples/) and [test](https://github.com/thinks/ppm-io/blob/master/test/) folders.
 
-Reading images is done as follows.
+The examples below demonstrate reading images. The functions taking an `std::istream` are the most flexible, since they do not assume that the image is stored on disk. Also, these versions are useful for testing since they allow the tests to run in memory which avoids file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions are also available.
 ```cpp
+#include <thinks/pnm_io/pnm_io.h>
+
 // RGB (PPM)
 auto width = std::size_t{0};
 auto height = std::size_t{0};
@@ -16,29 +18,21 @@ auto ifs = std::ifstream("my_file.ppm", ios::binary);
 thinks::pnm_io::ReadPpmImage(ifs, &width, &height, &pixel_data);
 ifs.close();
 
+// ... or more conveniently.
+thinks::pnm_io::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
+
 // Greyscale (PGM)
 auto width = std::size_t{0};
 auto height = std::size_t{0};
 auto pixel_data = std::vector<std::uint8_t>{};
+
 auto ifs = std::ifstream("my_file.pgm", ios::binary);
 thinks::pnm_io::ReadPgmImage(ifs, &width, &height, &pixel_data);
 ifs.close();
-```
-The above versions use the stream interface. This interface is the most flexible, since it does not assume that the image is stored on disk. Also, this version is useful for testing since it allows the tests to run in memory avoiding file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions are also available.
-```cpp
-// RGB (PPM)
-auto width = std::size_t{0};
-auto height = std::size_t{0};
-auto pixel_data = std::vector<std::uint8_t>{};
-thinks::pnm_io::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
 
-// Greyscale (PGM)
-auto width = std::size_t{0};
-auto height = std::size_t{0};
-auto pixel_data = std::vector<std::uint8_t>{};
-thinks::pnm_io::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
+// ... or more conveniently.
+thinks::pnm_io::ReadPgmImage("my_file.pgm", &width, &height, &pixel_data);
 ```
-
 Writing image files is done in a similar fashion.
 ```cpp
 // Write a 10x10 RGB image where all pixels have the value (128, 128, 128).
