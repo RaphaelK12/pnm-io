@@ -6,7 +6,7 @@ All code in this repository is released under the [MIT license](https://en.wikip
 ## Usage
 The implementation supports both reading and writing of RGB (PPM) and greyscale (PGM)images. We provide some brief usage examples here, additional examples can be found in the [examples](https://github.com/thinks/ppm-io/blob/master/examples/) and [test](https://github.com/thinks/ppm-io/blob/master/test/) folders.
 
-The examples below demonstrate reading images. The functions taking an `std::istream` are the most flexible, since they do not assume that the image is stored on disk. These versions are useful for testing since they allow the tests to run in memory which avoids file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions that take a file name are also provided.
+The examples below demonstrate reading images. The functions taking an `std::istream` are the most flexible, since they do not assume that the image is stored on disk. These versions are useful for testing since they allow the tests to run in memory, which avoids file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions that take a file name are also provided.
 ```cpp
 #include <thinks/pnm_io/pnm_io.h>
 
