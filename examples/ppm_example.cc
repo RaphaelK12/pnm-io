@@ -49,7 +49,7 @@ void PpmExample(const std::string& filename) {
     }
   }
 
-  thinks::pnm_io::WritePpmImage(filename, width, height, pixel_data.data());
+  thinks::WritePpmImage(filename, width, height, pixel_data.data());
 }
 
 }  // namespace examples

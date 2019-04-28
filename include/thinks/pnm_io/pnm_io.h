@@ -2,8 +2,7 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
-#ifndef THINKS_PNM_IO_PNM_IO_H_INCLUDED
-#define THINKS_PNM_IO_PNM_IO_H_INCLUDED
+#pragma once
 
 #include <cassert>
 #include <cerrno>
@@ -17,7 +16,6 @@
 #include <vector>
 
 namespace thinks {
-namespace pnm_io {
 namespace detail {
 
 template <typename FileStreamT>
@@ -38,8 +36,8 @@ void OpenFileStream(FileStreamT* const file_stream, std::string const& filename,
 }
 
 template <typename ExceptionT>
-void ThrowIfInvalidMagicNumber(std::string const& magic_number,
-                               std::string const& expected_magic_number) {
+void ThrowIfInvalidMagicNumber(
+    std::string const& magic_number, std::string const& expected_magic_number) {
   if (magic_number != expected_magic_number) {
     auto oss = std::ostringstream{};
     oss << "magic number must be '" << expected_magic_number << "', was '"
@@ -80,6 +78,9 @@ void ThrowIfInvalidPixelData(std::vector<std::uint8_t> const& pixel_data,
     throw ExceptionT("pixel data must match width and height");
   }
 }
+
+inline constexpr const char* PgmMagicNumber() { return "P5"; }
+inline constexpr const char* PpmMagicNumber() { return "P6"; }
 
 struct Header {
   std::string magic_number = "";
@@ -164,8 +165,8 @@ inline void ReadPgmImage(std::istream& is, std::size_t* const width,
                          std::size_t* const height,
                          std::vector<std::uint8_t>* const pixel_data) {
   auto header = detail::ReadHeader(is);
-  detail::ThrowIfInvalidMagicNumber<std::runtime_error>(header.magic_number,
-                                                        "P5");
+  detail::ThrowIfInvalidMagicNumber<std::runtime_error>(
+      header.magic_number, detail::PgmMagicNumber());
 
   assert(width != nullptr && "null width");
   assert(height != nullptr && "null height");
@@ -216,7 +217,7 @@ inline void WritePgmImage(std::ostream& os, std::size_t const width,
                           std::size_t const height,
                           std::uint8_t const* const pixel_data) {
   auto header = detail::Header{};
-  header.magic_number = "P5";
+  header.magic_number = detail::PgmMagicNumber();
   header.width = width;
   header.height = height;
   detail::WriteHeader(os, header);
@@ -268,8 +269,8 @@ inline void ReadPpmImage(std::istream& is, std::size_t* const width,
                          std::size_t* const height,
                          std::vector<std::uint8_t>* const pixel_data) {
   auto header = detail::ReadHeader(is);
-  detail::ThrowIfInvalidMagicNumber<std::runtime_error>(header.magic_number,
-                                                        "P6");
+  detail::ThrowIfInvalidMagicNumber<std::runtime_error>(
+      header.magic_number, detail::PpmMagicNumber());
 
   assert(width != nullptr && "null width");
   assert(height != nullptr && "null height");
@@ -320,7 +321,7 @@ inline void WritePpmImage(std::ostream& os, std::size_t const width,
                           std::size_t const height,
                           std::uint8_t const* const pixel_data) {
   auto header = detail::Header{};
-  header.magic_number = "P6";
+  header.magic_number = detail::PpmMagicNumber();
   header.width = width;
   header.height = height;
   detail::WriteHeader(os, header);
@@ -341,7 +342,4 @@ inline void WritePpmImage(std::string const& filename, std::size_t const width,
   ofs.close();
 }
 
-}  // namespace pnm_io
 }  // namespace thinks
-
-#endif  // THINKS_PNM_IO_PNM_IO_H_INCLUDED

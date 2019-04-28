@@ -14,14 +14,14 @@ void WritePgmImage(const std::string& filename) {
   constexpr auto width = std::size_t{10};
   constexpr auto height = std::size_t{10};
   auto pixel_data = std::vector<std::uint8_t>(width * height, 128);
-  thinks::pnm_io::WritePgmImage(filename, width, height, pixel_data.data());
+  thinks::WritePgmImage(filename, width, height, pixel_data.data());
 }
 
 void WritePpmImage(const std::string& filename) {
   constexpr auto width = std::size_t{10};
   constexpr auto height = std::size_t{10};
   auto pixel_data = std::vector<std::uint8_t>(width * height * 3, 128);
-  thinks::pnm_io::WritePpmImage(filename, width, height, pixel_data.data());
+  thinks::WritePpmImage(filename, width, height, pixel_data.data());
 }
 
 }  // namespace

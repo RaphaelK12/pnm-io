@@ -2,12 +2,12 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
-#include <pgm_example.h>
+#include "pgm_example.h"
 
 #include <limits>
 #include <vector>
 
-#include <thinks/pnm_io/pnm_io.h>
+#include "thinks/pnm_io/pnm_io.h"
 
 namespace {
 
@@ -45,7 +45,7 @@ void PgmExample(const std::string& filename) {
     }
   }
 
-  thinks::pnm_io::WritePgmImage(filename, width, height, pixel_data.data());
+  thinks::WritePgmImage(filename, width, height, pixel_data.data());
 }
 
 }  // namespace examples
