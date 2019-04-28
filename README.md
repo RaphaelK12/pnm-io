@@ -73,17 +73,3 @@ ofs.close();
 // ... or more conveniently.
 thinks::WritePgmImage("my_file.pgm", width, height, pixel_data.data());
 ```
-
-## Tests
-The tests for this package are written in the [Catch2](https://github.com/catchorg/Catch2) framework, which is included as a submodule of this repository. Cloning recursively to initialize submodules is not required when using the functionality in this package, only to run the tests.
-
-Running the tests is simple. In a terminal do the following (and similar for `Debug`):
-```bash
-$ cd d:
-$ git clone --recursive git@github.com:/thinks/pnm-io.git D:/pnm-io
-$ mkdir build-pnm-io
-$ cd build-pnm-io
-$ cmake ../pnm-io
-$ cmake --build . --config Release
-$ ctest . -C Release --verbose
-```
