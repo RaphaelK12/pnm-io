@@ -8,18 +8,18 @@ The implementation supports both reading and writing of RGB (PPM) and greyscale 
 
 The examples below demonstrate reading images. The functions taking an `std::istream` are the most flexible, since they do not assume that the image is stored on disk. These versions are useful for testing since they allow the tests to run in memory, which avoids file permission issues. However, since images stored on disk are probably the most likely scenario convenience versions that take a file name are also provided.
 ```cpp
-#include <thinks/pnm_io/pnm_io.h>
+#include "thinks/pnm_io/pnm_io.h"
 
 // RGB (PPM)
 auto width = std::size_t{0};
 auto height = std::size_t{0};
 auto pixel_data = std::vector<std::uint8_t>{};
 auto ifs = std::ifstream("my_file.ppm", ios::binary);
-thinks::pnm_io::ReadPpmImage(ifs, &width, &height, &pixel_data);
+thinks::ReadPpmImage(ifs, &width, &height, &pixel_data);
 ifs.close();
 
 // ... or more conveniently.
-thinks::pnm_io::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
+thinks::ReadPpmImage("my_file.ppm", &width, &height, &pixel_data);
 
 // Greyscale (PGM)
 auto width = std::size_t{0};
@@ -27,37 +27,37 @@ auto height = std::size_t{0};
 auto pixel_data = std::vector<std::uint8_t>{};
 
 auto ifs = std::ifstream("my_file.pgm", ios::binary);
-thinks::pnm_io::ReadPgmImage(ifs, &width, &height, &pixel_data);
+thinks::ReadPgmImage(ifs, &width, &height, &pixel_data);
 ifs.close();
 
 // ... or more conveniently.
-thinks::pnm_io::ReadPgmImage("my_file.pgm", &width, &height, &pixel_data);
+thinks::ReadPgmImage("my_file.pgm", &width, &height, &pixel_data);
 ```
 Writing image files is done in a similar fashion. Again, convenience functions taking file names are provided. 
 ```cpp
-#include <thinks/pnm_io/pnm_io.h>
+#include "thinks/pnm_io/pnm_io.h"
 
 // Write a 10x10 RGB (PPM) image where all pixels have the value (128, 128, 128).
 constexpr auto width = std::size_t{10};
 constexpr auto height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height * 3, 128);
 auto ofs = std::ofstream("my_file.ppm", ios::binary);
-thinks::pnm_io::WritePpmImage(ofs, width, height, pixel_data.data());
+thinks::WritePpmImage(ofs, width, height, pixel_data.data());
 ofs.close();
 
 // ... or more conveniently.
-thinks::pnm_io::WritePpmImage("my_file.ppm", width, height, pixel_data.data());
+thinks::WritePpmImage("my_file.ppm", width, height, pixel_data.data());
 
 // Write a 10x10 greyscale (PGM) image where all pixels have the value 128.
 constexpr auto width = std::size_t{10};
 constexpr auto height = std::size_t{10};
 auto pixel_data = std::vector<std::uint8_t>(width * height, 128);
 auto ofs = std::ofstream("my_file.pgm", ios::binary);
-thinks::pnm_io::WritePgmImage(ofs, width, height, pixel_data.data());
+thinks::WritePgmImage(ofs, width, height, pixel_data.data());
 ofs.close();
 
 // ... or more conveniently.
-thinks::pnm_io::WritePgmImage("my_file.pgm", width, height, pixel_data.data());
+thinks::WritePgmImage("my_file.pgm", width, height, pixel_data.data());
 ```
 
 ## Tests
