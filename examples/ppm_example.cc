@@ -2,12 +2,12 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
-#include <ppm_example.h>
+#include "ppm_example.h"
 
 #include <limits>
 #include <vector>
 
-#include <thinks/pnm_io/pnm_io.h>
+#include "thinks/pnm_io/pnm_io.h"
 
 namespace {
 
